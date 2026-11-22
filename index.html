@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A2A6B">
+<title>ناس البراشية — بيت البلد على الإنترنت</title>
+<meta name="description" content="ناس البراشية: أخبار ومناسبات واحتفالات وخريطة حية وديوان كبار البلد وبنك الجدعنة — كل حاجة عن قرية البراشية، مركز فارسكور، دمياط.">
+<link rel="icon" href="icon-512.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--bg:#F4F7FC;--card:#fff;--ink:#0A1F3D;--mute:#5A6E8C;--line:#E2E9F4;--navy:#0A2A6B;--navy2:#1256B8;--red:#E30613;--red2:#B00510;--gold:#F5A800;--gold2:#E8A90C;--sky:#1B9BD8;--green:#2E9E4F;--chip:#E7EEF9;--sh:0 1px 2px rgba(10,31,61,.05),0 8px 24px rgba(10,31,61,.07);--sh-lg:0 2px 6px rgba(10,31,61,.08),0 16px 40px rgba(10,31,61,.14)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Cairo",system-ui,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:86px}
+.wrap{max-width:760px;margin:0 auto;padding:0 14px}
+header{padding:16px 0 4px;text-align:center}
+.logoCard{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--sh);padding:14px 10px 8px}
+.logoCard img{max-width:340px;width:88%;height:auto;display:block;margin:0 auto}
+.tag{color:var(--mute);font-size:14px;margin:8px 4px 0}
+main{padding:10px 0 20px}
+.hide{display:none!important}
+h2{font-size:20px;margin:14px 0 6px}
+.sub{color:var(--mute);font-size:14px;margin:4px 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);padding:14px;margin-bottom:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:12px;padding:11px 16px;font:inherit;font-weight:800;font-size:15px;cursor:pointer;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;text-decoration:none;min-height:44px}
+.btn.o{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+.btn.g{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0A1F3D}
+.btn.r{background:linear-gradient(135deg,var(--red),var(--red2));color:#fff}
+.btn:active{transform:scale(.98)}
+.row{display:flex;gap:8px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;min-height:40px;padding:0 16px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.chip[aria-pressed="true"]{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(10,42,107,.3)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);padding:16px 12px;text-align:center;cursor:pointer;font:inherit;color:var(--ink)}
+.tile .i{font-size:30px;display:block;margin-bottom:6px}
+.tile b{font-size:15px}
+.tile span.d{display:block;color:var(--mute);font-size:12px;margin-top:2px}
+.sos{background:linear-gradient(135deg,#FFF1F1,#FFE3E3);border:1.5px solid #F3B7B7;border-radius:16px;padding:16px;text-align:center;box-shadow:var(--sh);margin-bottom:12px}
+.sosBtn{width:150px;height:150px;border-radius:50%;border:none;background:radial-gradient(circle at 35% 30%,#FF5A5A,var(--red) 55%,var(--red2));color:#fff;font:inherit;font-size:20px;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(227,6,19,.35);margin:8px auto;display:block}
+.sosBtn:active{transform:scale(.96)}
+.empty{background:var(--card);border:1.5px dashed var(--line);border-radius:16px;padding:18px;text-align:center;color:var(--mute);font-size:14px}
+label{display:block;font-size:13px;font-weight:700;margin:10px 0 4px}
+input,textarea,select{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+.nav{position:fixed;bottom:0;right:0;left:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;z-index:1200;padding:4px 2px calc(4px + env(safe-area-inset-bottom))}
+.nav button{flex:1;background:none;border:none;font:inherit;font-size:10.5px;font-weight:700;color:var(--mute);cursor:pointer;padding:6px 0 2px;border-radius:12px}
+.nav button .i{font-size:19px;display:block;line-height:1.1}
+.nav button[aria-pressed="true"]{color:var(--navy);background:var(--chip)}
+#mapbox{height:420px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--sh);position:relative;z-index:0}
+#toast{position:fixed;bottom:96px;right:50%;transform:translateX(50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:1300;max-width:88vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(50%) translateY(0)}
+footer{text-align:center;color:var(--mute);font-size:12px;padding:14px 0 6px}
+.occTag{display:inline-block;background:var(--chip);color:var(--navy);border-radius:99px;padding:2px 10px;font-size:12px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logoCard">
+    <img src="logo.png" alt="ناس البراشية">
+    <p class="tag">بيت البلد على الإنترنت — أخبار ومناسبات وكل حاجة عن البراشية 🏡</p>
+  </div>
+</header>
+
+<main id="v_home">
+  <div class="sos">
+    <b style="font-size:17px">🚨 عزوة البراشية — زرار النجدة</b>
+    <p class="sub">لو حصلت مصيبة لا قدر الله — حريقة، حادثة، حد تعب فجأة — دوس الزرار، هيجهزلك رسالة بموقعك تبعتها على طول.</p>
+    <button class="sosBtn" id="sosbtn" type="button">الحقوني 🚨</button>
+    <p class="sub" style="margin:0">الزرار بيحدد موقعك ويفتح واتساب برسالة جاهزة فيها مكانك.</p>
+  </div>
+
+  <h2>أقسام البلد</h2>
+  <div class="grid">
+    <button class="tile" type="button" data-go="news"><span class="i">📰</span><b>أخبار البلد</b><span class="d">إيه الجديد في البراشية</span></button>
+    <button class="tile" type="button" data-go="occ"><span class="i">🎉</span><b>مناسبات واحتفالات</b><span class="d">أفراح ومواليد ونجاح وعزاء</span></button>
+    <button class="tile" type="button" data-go="map"><span class="i">🗺️</span><b>خريطة البراشية الحية</b><span class="d">الفرن والصيدلية والسوق والموقف</span></button>
+    <button class="tile" type="button" data-go="diwan"><span class="i">🏛️</span><b>ديوان البراشية</b><span class="d">حكمة اليوم وقصص الكبار</span></button>
+    <button class="tile" type="button" data-go="help"><span class="i">🤝</span><b>بنك الوقت والجدعنة</b><span class="d">ساعد واكسب نقاط جدعنة</span></button>
+    <button class="tile" type="button" data-go="sug"><span class="i">💡</span><b>اقتراحات</b><span class="d">قولنا فكرتك لخدمة البلد</span></button>
+  </div>
+
+  <h2>🎙️ راديو البراشية</h2>
+  <div class="card">
+    <p class="sub" style="margin-top:0">تسجيلات صوتية قصيرة من أهل البلد: قرآن بصوت حد من البلد، أخبار البلد، إعلانات المحلات بصوتهم.</p>
+    <div id="radiolist"></div>
+    <a class="btn g" id="radiosend" target="_blank" rel="noopener" style="width:100%">🎙️ ابعت تسجيلك الصوتي</a>
+    <p class="sub">ابعت فويس واتساب وهننشره هنا باسمك.</p>
+  </div>
+
+  <footer>ناس البراشية — قرية البراشية، مركز فارسكور، دمياط · <a href="https://www.facebook.com/share/g/1AG8ckFgVQ/" target="_blank" rel="noopener" style="color:var(--navy)">جروب البلد على فيسبوك</a></footer>
+</main>
+
+<main id="v_news" class="hide">
+  <h2>📰 أخبار البلد</h2>
+  <p class="sub">آخر أخبار البراشية أول بأول.</p>
+  <div id="newslist"></div>
+  <a class="btn" id="newssend" target="_blank" rel="noopener" style="width:100%">＋ ابعت خبر</a>
+</main>
+
+<main id="v_occ" class="hide">
+  <h2>🎉 مناسبات واحتفالات</h2>
+  <p class="sub">أفراح ومواليد ونجاح وعزاء واحتفالات أهل البلد.</p>
+  <div class="chips" id="occchips"></div>
+  <div id="occlist"></div>
+  <a class="btn" id="occsend" target="_blank" rel="noopener" style="width:100%">＋ ابعت مناسبة</a>
+</main>
+
+<main id="v_map" class="hide">
+  <h2>🗺️ خريطة البراشية الحية</h2>
+  <p class="sub">أماكن البلد على الخريطة: الفرن، الصيدلية، السوق، وموقف عربيات دمياط.</p>
+  <div class="chips" id="mapchips"></div>
+  <div id="mapbox"></div>
+  <div class="row" style="margin-top:10px">
+    <button class="btn" id="myloc" type="button" style="flex:1">📍 أنا فين؟</button>
+    <a class="btn o" id="addplace" target="_blank" rel="noopener" style="flex:1">＋ ضيف مكانك</a>
+  </div>
+  <div id="placelist" style="margin-top:10px"></div>
+</main>
+
+<main id="v_diwan" class="hide">
+  <h2>🏛️ ديوان البراشية</h2>
+  <p class="sub">مكان الكبار: حكمة كل يوم، قصة من زمان، نصيحة ودعاء — عشان الصغير يعرف أصل البلد ويحبها.</p>
+  <div id="diwanlist"></div>
+  <a class="btn" id="diwansend" target="_blank" rel="noopener" style="width:100%">＋ ابعت حكمة أو قصة</a>
+</main>
+
+<main id="v_help" class="hide">
+  <h2>🤝 بنك الوقت والجدعنة</h2>
+  <p class="sub">عندك عربية فاضية رايح دمياط؟ عايز توصل أمانة؟ عندك سلم طويل؟ بتعرف تصلح حاجة؟ انزل «أنا فاضي أساعد» واكسب نقاط جدعنة — وكل شهر بنكرم أكتر واحد جدع في البلد 🏆</p>
+  <div id="helplist"></div>
+  <div class="row">
+    <a class="btn" id="helpoffer" target="_blank" rel="noopener" style="flex:1">🙋 أنا أقدر أساعد</a>
+    <a class="btn o" id="helpneed" target="_blank" rel="noopener" style="flex:1">🆘 محتاج مساعدة</a>
+  </div>
+</main>
+
+<main id="v_sug" class="hide">
+  <h2>💡 اقتراحات لخدمة البلد</h2>
+  <p class="sub">عندك فكرة تخلي البراشية أحسن؟ اكتبها هنا.</p>
+  <form id="sugform" class="card">
+    <label>اسمك (اختياري)</label>
+    <input id="sugname" maxlength="40" placeholder="اسمك">
+    <label>اقتراحك</label>
+    <textarea id="sugtext" maxlength="600" placeholder="اكتب اقتراحك هنا..." required></textarea>
+    <button class="btn" type="submit" style="width:100%;margin-top:12px">إرسال الاقتراح</button>
+  </form>
+</main>
+</div>
+
+<nav class="nav" id="nav">
+  <button type="button" data-v="home" aria-pressed="true"><span class="i">🏠</span>الرئيسية</button>
+  <button type="button" data-v="news" aria-pressed="false"><span class="i">📰</span>أخبار</button>
+  <button type="button" data-v="occ" aria-pressed="false"><span class="i">🎉</span>مناسبات</button>
+  <button type="button" data-v="map" aria-pressed="false"><span class="i">🗺️</span>الخريطة</button>
+  <button type="button" data-v="diwan" aria-pressed="false"><span class="i">🏛️</span>ديوان</button>
+  <button type="button" data-v="help" aria-pressed="false"><span class="i">🤝</span>جدعنة</button>
+  <button type="button" data-v="sug" aria-pressed="false"><span class="i">💡</span>اقتراحات</button>
+</nav>
+
+<div id="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var $=function(id){return document.getElementById(id)};
+var ADMIN="201050766025";
+var tt=null;
+function toast(m){var t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(function(){t.classList.remove("show")},2600)}
+function wa(text){return "https://wa.me/"+ADMIN+"?text="+encodeURIComponent(text)}
+function esc(s){return String(s||"").replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+
+/* التنقل */
+function view(v){
+  ["home","news","occ","map","diwan","help","sug"].forEach(function(k){$("v_"+k).classList.toggle("hide",k!==v)});
+  Array.prototype.forEach.call($("nav").children,function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-v")===v))});
+  if(v==="map")initMap();
+  window.scrollTo(0,0);
+}
+$("nav").addEventListener("click",function(e){var b=e.target.closest("button[data-v]");if(b)view(b.getAttribute("data-v"))});
+Array.prototype.forEach.call(document.querySelectorAll("[data-go]"),function(b){b.addEventListener("click",function(){view(b.getAttribute("data-go"))})});
+
+/* عزوة البراشية — زرار النجدة */
+$("sosbtn").addEventListener("click",function(){
+  function send(lat,lng){
+    var loc=lat?("\nموقعي: https://www.google.com/maps?q="+lat+","+lng):"";
+    var msg="🚨 نجدة! أنا محتاج مساعدة دلوقتي في البراشية."+loc+"\n(من موقع ناس البراشية)";
+    window.open(wa(msg),"_blank");
+  }
+  if(navigator.geolocation){
+    toast("بنحدد موقعك...");
+    navigator.geolocation.getCurrentPosition(function(p){send(p.coords.latitude.toFixed(6),p.coords.longitude.toFixed(6))},function(){send(null,null)},{timeout:8000});
+  }else send(null,null);
+});
+
+/* البيانات — محتوى حقيقي بس، بيتملى من إدارة الموقع */
+var NEWS=[];   /* {t:"العنوان",x:"النص",d:"التاريخ"} */
+var OCC=[];    /* {t:"العنوان",c:"wed|birth|success|death|party",x:"التفاصيل",d:"التاريخ"} */
+var DIWAN=[];  /* {t:"العنوان",n:"اسم الكبير",x:"النص"} */
+var HELP=[];   /* {n:"الاسم",x:"العرض أو الطلب",k:"offer|need"} */
+var RADIO=[];  /* {t:"العنوان",n:"الصوت",u:"رابط الصوت"} */
+var OCCCATS=[["all","الكل"],["wed","💍 أفراح"],["birth","👶 مواليد"],["success","🎓 نجاح"],["death","🕊️ عزاء"],["party","🎊 احتفالات"]];
+var occCat="all";
+
+function emptyBox(msg){return '<div class="empty">'+msg+"</div>"}
+function renderNews(){
+  $("newslist").innerHTML=NEWS.length?NEWS.map(function(n){return '<div class="card"><b>'+esc(n.t)+"</b>"+(n.d?' <span class="sub">· '+esc(n.d)+"</span>":"")+'<p style="margin:6px 0 0">'+esc(n.x)+"</p></div>"}).join(""):emptyBox("لسه مفيش أخبار منشورة — أول خبر من البلد هيظهر هنا. عندك خبر؟ ابعته من الزرار اللي تحت.");
+}
+function renderOccChips(){
+  $("occchips").innerHTML=OCCCATS.map(function(c){return '<button type="button" class="chip" data-oc="'+c[0]+'" aria-pressed="'+(occCat===c[0])+'">'+c[1]+"</button>"}).join("");
+  Array.prototype.forEach.call($("occchips").children,function(b){b.onclick=function(){occCat=b.getAttribute("data-oc");renderOccChips();renderOcc()}});
+}
+function occLabel(c){for(var i=0;i<OCCCATS.length;i++)if(OCCCATS[i][0]===c)return OCCCATS[i][1];return ""}
+function renderOcc(){
+  var list=OCC.filter(function(o){return occCat==="all"||o.c===occCat});
+  $("occlist").innerHTML=list.length?list.map(function(o){return '<div class="card"><span class="occTag">'+esc(occLabel(o.c))+"</span> <b>"+esc(o.t)+"</b>"+(o.d?' <span class="sub">· '+esc(o.d)+"</span>":"")+'<p style="margin:6px 0 0">'+esc(o.x)+"</p></div>"}).join(""):emptyBox("لسه مفيش مناسبات منشورة — فرحك أو مناسبتك الجاية ابعتها وهننشرها هنا.");
+}
+function renderDiwan(){
+  $("diwanlist").innerHTML=DIWAN.length?DIWAN.map(function(d){return '<div class="card"><b>'+esc(d.t)+"</b>"+(d.n?' <span class="sub">— '+esc(d.n)+"</span>":"")+'<p style="margin:6px 0 0">'+esc(d.x)+"</p></div>"}).join(""):emptyBox("لسه بنجمع حكم وقصص كبار البلد — لو عندك حكمة أو قصة من زمان، ابعتها وهننشرها باسم صاحبها.");
+}
+function renderHelp(){
+  $("helplist").innerHTML=HELP.length?HELP.map(function(h){return '<div class="card"><b>'+esc(h.n)+"</b> "+(h.k==="need"?'<span class="occTag">محتاج مساعدة</span>':'<span class="occTag">بيساعد</span>')+'<p style="margin:6px 0 0">'+esc(h.x)+"</p></div>"}).join(""):emptyBox("لسه مفيش عروض مساعدة — كن أول جدع في البلد وانزل عرضك من الزرار اللي تحت.");
+}
+function renderRadio(){
+  $("radiolist").innerHTML=RADIO.length?RADIO.map(function(r){return '<div style="margin-bottom:10px"><b>'+esc(r.t)+"</b>"+(r.n?' <span class="sub">— '+esc(r.n)+"</span>":"")+'<audio controls style="width:100%;margin-top:6px" src="'+esc(r.u)+'"></audio></div>'}).join(""):'<p class="sub">لسه مفيش تسجيلات — أول صوت من البلد هيتسمع هنا.</p>';
+}
+
+/* أزرار الإرسال عبر واتساب */
+$("newssend").href=wa("عايز أنشر خبر في «ناس البراشية» 📰\nالعنوان: \nالخبر: ");
+$("occsend").href=wa("عايز أنشر مناسبة في «ناس البراشية» 🎉\nالنوع (فرح/مولود/نجاح/عزاء/احتفال): \nالتفاصيل: \nالتاريخ: ");
+$("diwansend").href=wa("عايز أنشر في «ديوان البراشية» 🏛️\nالاسم: \nالحكمة أو القصة: ");
+$("helpoffer").href=wa("أنا أقدر أساعد في «بنك الجدعنة» 🤝\nالاسم: \nأقدر أساعد في: \nمتاح إمتى: ");
+$("helpneed").href=wa("محتاج مساعدة من «بنك الجدعنة» 🆘\nالاسم: \nمحتاج: ");
+$("radiosend").href=wa("عايز أنشر تسجيل في «راديو البراشية» 🎙️\nالاسم: \nعنوان التسجيل: \n(ابعت الفويس في نفس المحادثة)");
+$("sugform").addEventListener("submit",function(e){
+  e.preventDefault();
+  var t=$("sugtext").value.trim();if(!t)return;
+  var n=$("sugname").value.trim();
+  window.open(wa("اقتراح لخدمة البراشية 💡"+(n?"\nمن: "+n:"")+"\n"+t),"_blank");
+});
+
+/* خريطة البراشية الحية */
+var VILLAGE=[31.26724,31.68774];
+var PCATS=[["all","الكل"],["food","🍞 أكل وشرب"],["health","💊 صحة"],["service","🛠️ خدمات"],["trans","🚐 مواصلات"],["public","🏛️ أماكن عامة"]];
+var PLACES=[];/* {n:"الاسم",c:"food",lat:0,lng:0,st:"فاتح دلوقتي"} — أماكن حقيقية بس */
+var mapObj=null,mapMarks=[],mapCat="all",meMark=null;
+function initMap(){
+  if(!window.L){toast("الخريطة لسه بتحمّل، جرّب كمان ثانية");return}
+  if(!mapObj){
+    mapObj=L.map("mapbox").setView(VILLAGE,15);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(mapObj);
+    L.marker(VILLAGE).addTo(mapObj).bindPopup("<b>قرية البراشية</b><br>مركز فارسكور، دمياط");
+    renderMapChips();drawPlaces();
+  }
+  setTimeout(function(){if(mapObj)mapObj.invalidateSize()},90);
+}
+function renderMapChips(){
+  $("mapchips").innerHTML=PCATS.map(function(c){return '<button type="button" class="chip" data-pc="'+c[0]+'" aria-pressed="'+(mapCat===c[0])+'">'+c[1]+"</button>"}).join("");
+  Array.prototype.forEach.call($("mapchips").children,function(b){b.onclick=function(){mapCat=b.getAttribute("data-pc");renderMapChips();drawPlaces()}});
+}
+function drawPlaces(){
+  if(!mapObj)return;
+  mapMarks.forEach(function(m){mapObj.removeLayer(m)});mapMarks=[];
+  var list=PLACES.filter(function(p){return mapCat==="all"||p.c===mapCat});
+  list.forEach(function(p){
+    var m=L.marker([p.lat,p.lng]).addTo(mapObj);
+    m.bindPopup("<b>"+esc(p.n)+"</b>"+(p.st?"<br>"+esc(p.st):"")+'<br><a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+p.lat+","+p.lng+'">الاتجاهات 🚗</a>');
+    mapMarks.push(m);
+  });
+  $("placelist").innerHTML=list.length?list.map(function(p){return '<div class="card" style="padding:10px 12px;margin-bottom:8px"><b>'+esc(p.n)+"</b>"+(p.st?' <span class="sub">— '+esc(p.st)+"</span>":"")+"</div>"}).join(""):'<p class="sub">لسه بنجمع أماكن البلد على الخريطة — لو عندك مكان (فرن، صيدلية، محل، موقف) دوس «ضيف مكانك» وابعت موقعه ونثبته هنا.</p>';
+}
+$("myloc").addEventListener("click",function(){
+  if(!mapObj)initMap();
+  if(!mapObj)return;
+  if(!navigator.geolocation){toast("المتصفح مش بيدعم تحديد الموقع");return}
+  navigator.geolocation.getCurrentPosition(function(p){
+    var ll=[p.coords.latitude,p.coords.longitude];
+    if(meMark)mapObj.removeLayer(meMark);
+    meMark=L.circleMarker(ll,{radius:9,color:"#0A2A6B",fillColor:"#1B9BD8",fillOpacity:.9}).addTo(mapObj).bindPopup("أنت هنا 📍").openPopup();
+    mapObj.setView(ll,16);
+  },function(){toast("تعذّر تحديد الموقع — فعّل الـGPS وحاول تاني")});
+});
+$("addplace").href=wa("عايز أضيف مكاني على خريطة البراشية 🗺️\nالاسم: \nالنوع (فرن/صيدلية/محل/موقف...): \nالموقع: (ابعت اللوكيشن من خرائط جوجل)");
+
+renderNews();renderOccChips();renderOcc();renderDiwan();renderHelp();renderRadio();
+</script>
+
+<!-- fbk: رأيك يهمنا -->
+<div id="fbkWrap" style="position:fixed;bottom:96px;left:12px;z-index:1250">
+  <button type="button" onclick="var b=document.getElementById('fbkBox');b.style.display=(b.style.display=='block'?'none':'block')" style="border:none;border-radius:99px;padding:10px 16px;font:inherit;font-weight:800;font-size:14px;background:linear-gradient(135deg,#F5A800,#E8A90C);color:#0A1F3D;box-shadow:0 6px 18px rgba(10,31,61,.25);cursor:pointer">💬 رأيك يهمنا</button>
+  <div id="fbkBox" style="display:none;background:#fff;border:1px solid #E2E9F4;border-radius:14px;box-shadow:0 10px 30px rgba(10,31,61,.18);padding:12px;margin-top:8px;width:240px">
+    <p style="margin:0 0 8px;font-size:14px;font-weight:700">رأيك في «ناس البراشية»؟</p>
+    <a href="https://wa.me/201050766025?text=%D8%B1%D8%A3%D9%8A%D9%8A%20%D9%81%D9%8A%20%D9%85%D9%88%D9%82%D8%B9%20%D9%86%D8%A7%D8%B3%20%D8%A7%D9%84%D8%A8%D8%B1%D8%A7%D8%B4%D9%8A%D8%A9%3A%20" target="_blank" rel="noopener" style="display:block;text-align:center;background:#25D366;color:#fff;border-radius:10px;padding:9px;font-weight:800;text-decoration:none;margin-bottom:6px">واتساب</a>
+    <a href="mailto:abdullah.shahino23@gmail.com?subject=%D8%B1%D8%A3%D9%8A%20%D9%81%D9%8A%20%D9%85%D9%88%D9%82%D8%B9%20%D9%86%D8%A7%D8%B3%20%D8%A7%D9%84%D8%A8%D8%B1%D8%A7%D8%B4%D9%8A%D8%A9" style="display:block;text-align:center;background:#0A2A6B;color:#fff;border-radius:10px;padding:9px;font-weight:800;text-decoration:none">إيميل</a>
+  </div>
+</div>
+</body>
+</html>
