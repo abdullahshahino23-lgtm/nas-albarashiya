@@ -297,5 +297,8 @@ renderNews();renderOccChips();renderOcc();renderDiwan();renderHelp();renderRadio
     <a href="mailto:abdullah.shahino23@gmail.com?subject=%D8%B1%D8%A3%D9%8A%20%D9%81%D9%8A%20%D9%85%D9%88%D9%82%D8%B9%20%D9%86%D8%A7%D8%B3%20%D8%A7%D9%84%D8%A8%D8%B1%D8%A7%D8%B4%D9%8A%D8%A9" style="display:block;text-align:center;background:#0A2A6B;color:#fff;border-radius:10px;padding:9px;font-weight:800;text-decoration:none">إيميل</a>
   </div>
 </div>
+<!-- shahino-visitor-counter -->
+<div id="shahino-vc" style="text-align:center;margin:22px auto 100px;font-family:inherit"><span style="display:inline-flex;align-items:center;gap:8px;padding:9px 20px;border-radius:999px;border:1.5px solid rgba(128,128,128,.45);background:rgba(128,128,128,.12);font-weight:700;font-size:15px">👁 عدد الزوار: <b id="shahino-vc-num">…</b></span></div>
+<script>(function(){if(location.protocol.indexOf('http')!==0)return;var K='shahino-vc-nas-albarashiya',c=false;try{c=localStorage.getItem(K)==='1'}catch(e){}function hide(){var el=document.getElementById('shahino-vc');if(el)el.style.display='none'}fetch('https://countapi.mileshilliard.com/api/v1/'+(c?'get':'hit')+'/shahino-apps-2026-nas-albarashiya').then(function(r){return r.json()}).then(function(d){if(d&&typeof d.value==='number'){document.getElementById('shahino-vc-num').textContent=d.value.toLocaleString('en-US');try{localStorage.setItem(K,'1')}catch(e){}}else hide()}).catch(hide)})();</script>
 </body>
 </html>
